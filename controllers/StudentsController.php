@@ -2,18 +2,22 @@
 
 namespace app\controllers;
 
+use app\components\DataService;
 use Yii;
 use app\models\Student;
 use app\models\search\StudentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * StudentsController implements the CRUD actions for Student model.
  */
 class StudentsController extends Controller
 {
+    const STUDENTS_LIMIT = 10;
+
     /**
      * {@inheritdoc}
      */
@@ -23,6 +27,7 @@ class StudentsController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
+                    'getByClass' => ['GET'],
                     'delete' => ['POST'],
                 ],
             ],
@@ -123,5 +128,43 @@ class StudentsController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * @return array
+     */
+    public function actionGetbyclass()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $out = ['students' => [], 'success' => false];
+        $classId = Yii::$app->request->get('class_id', null);
+        $page = Yii::$app->request->get('page', 0);
+        $limit = Yii::$app->request->get('limit', self::STUDENTS_LIMIT);
+        $service = new DataService();
+        $students = $service->getStudentsByLesson($classId, $page, $limit);
+        $out['students'] = $students;
+        $out['success'] = true;
+
+        return $out;
+    }
+
+    /**
+     * @return array
+     */
+    public function actionGetbygroup()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $out = ['students' => [], 'success' => false];
+        $group = Yii::$app->request->get('group', null);
+        $page = Yii::$app->request->get('page', 0);
+        $limit = Yii::$app->request->get('limit', self::STUDENTS_LIMIT);
+        $service = new DataService();
+        $students = $service->getStudentsByGroup($group, $page, $limit);
+        $out['students'] = $students;
+        $out['success'] = true;
+
+        return $out;
     }
 }

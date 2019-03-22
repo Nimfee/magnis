@@ -1,12 +1,9 @@
 <?php
 
-namespace backend\modules\admin\models;
+namespace app\models;
 
-use app\models\Lesson;
-use app\models\Student;
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\db\Expression;
 
 /**
  * This is the model class for table "students_classes".
@@ -76,7 +73,7 @@ class StudentToLesson extends \yii\db\ActiveRecord
      */
     public function getStudent()
     {
-        return $this->hasOne(Student::className(), ['id' => 'student_id'])->inverseOf('studentToClass');
+        return $this->hasOne(Student::className(), ['id' => 'student_id'])->inverseOf('studentToLesson');
     }
 
     /**
@@ -84,6 +81,6 @@ class StudentToLesson extends \yii\db\ActiveRecord
      */
     public function getLesson()
     {
-        return $this->hasOne(Lesson::className(), ['id' => 'class_id'])->inverseOf('studentToClass');
+        return $this->hasOne(Lesson::className(), ['id' => 'class_id'])->inverseOf('studentToLesson');
     }
 }

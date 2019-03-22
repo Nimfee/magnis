@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use backend\modules\admin\models\StudentToLesson;
+use app\models\StudentToLesson;
 use Yii;
 
 /**
@@ -56,7 +56,7 @@ class Student extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStudentsClasses()
+    public function getStudentToLesson()
     {
         return $this->hasMany(StudentToLesson::className(), ['student_id' => 'id']);
     }
@@ -67,5 +67,9 @@ class Student extends \yii\db\ActiveRecord
     public function getClasses()
     {
         return $this->hasMany(Classes::className(), ['id' => 'class_id'])->viaTable('students_classes', ['student_id' => 'id']);
+    }
+    public function getStudentsByClass($class_id)
+    {
+
     }
 }

@@ -2,36 +2,89 @@
 
 namespace app\controllers;
 
+use app\components\DataService;
 use Yii;
 use app\models\Lesson;
 use app\models\search\LessonSearch;
-use yii\web\Controller;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\rest\ActiveController;
 
 /**
- * LessonsController implements the CRUD actions for Lesson model.
+ * @SWG\Swagger(
+ *     basePath="/",
+ *     produces={"application/json"},
+ *     consumes={"application/x-www-form-urlencoded"},
+ *     @SWG\Info(version="1.0", title="Simple API"),
+ * )
  */
-class LessonsController extends Controller
+class LessonsController extends ActiveController
 {
+    const LESSONS_LIMIT = 10;
+
+    public $modelClass = 'app\models\Lesson';
+
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function behaviors()
     {
+        $behaviors = parent::behaviors();
+        $behaviors['verbs'] = [
+            'class'   => yii\filters\VerbFilter::className(),
+            'actions' => [
+                'all' => ['GET', 'POST'],
+                'update' => ['PUT', 'PATCH'],
+                'create' => ['POST'],
+            ],
+        ];
+
+        return $behaviors;
+    }
+    /**
+     * @inheritdoc
+     */
+    public function actions(): array
+    {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+            'docs' => [
+                'class' => 'yii2mod\swagger\SwaggerUIRenderer',
+                'restUrl' => Url::to(['site/json-schema']),
+            ],
+            'json-schema' => [
+                'class' => 'yii2mod\swagger\OpenAPIRenderer',
+                // Тhe list of directories that contains the swagger annotations.
+                'scanDir' => [
+                    Yii::getAlias('@app/controllers'),
+                    Yii::getAlias('@app/models'),
                 ],
+            ],
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
             ],
         ];
     }
 
     /**
-     * Lists all Lesson models.
-     * @return mixed
+     * @SWG\Get(path="/users",
+     *     tags={"user"},
+     *     summary="获取用户列表",
+     *     description="测试直接返回一个array",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *        in = "query",
+     *        name = "access_token",
+     *        description = "access token",
+     *        required = true,
+     *        type = "string"
+     *     ),
+     *
+     *     @SWG\Response(
+     *         response = 200,
+     *         description = " success"
+     *     )
+     * )
+     *
      */
     public function actionIndex()
     {
@@ -44,30 +97,20 @@ class LessonsController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Lesson model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     public function actionView($id)
     {
-        return $this->render('view', [
+        return [
             'model' => $this->findModel($id),
-        ]);
+        ];
     }
 
-    /**
-     * Creates a new Lesson model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
     public function actionCreate()
     {
         $model = new Lesson();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return ['view', 'id' => $model->id];
         }
 
         return $this->render('create', [
@@ -75,47 +118,25 @@ class LessonsController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing Lesson model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $out = ['model' => $model, 'success' => false, 'errors' => $model->getErrors()];
+        } else {
+            $out = ['model' => $model, 'success' => true];
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $out;
     }
 
-    /**
-     * Deletes an existing Lesson model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        return ['result' => $this->findModel($id)->delete()];
     }
 
-    /**
-     * Finds the Lesson model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Lesson the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     protected function findModel($id)
     {
         if (($model = Lesson::findOne($id)) !== null) {
@@ -123,5 +144,42 @@ class LessonsController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    public function actionGetbystudent()
+    {
+        $studentId = Yii::$app->request->get('student_id', null);
+        $page = Yii::$app->request->get('page', 0);
+        $limit = Yii::$app->request->get('limit', self::LESSONS_LIMIT);
+
+        if (null === $studentId) {
+            $out = ['classes' => [], 'success' => false];
+        } else {
+            $service = new DataService();
+            $classes = $service->getLessonsByStudent($studentId, $page, $limit);
+
+            $out = ['classes' => $classes, 'success' => true];
+        }
+
+        return $out;
+    }
+
+    public function actionGetdailyclassesbygroup()
+    {
+        $group = Yii::$app->request->get('group', null);
+        $page = Yii::$app->request->get('page', 0);
+        $limit = Yii::$app->request->get('limit', self::LESSONS_LIMIT);
+
+        if (null === $group) {
+            $out = ['classes' => [], 'success' => false];
+        } else {
+            $service = new DataService();
+            $classes = $service->getDailyScheduleByGivenClass($group, $page, $limit);
+
+            $out = ['classes' => $classes, 'success' => true];
+        }
+
+        return $out;
     }
 }
