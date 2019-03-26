@@ -3,11 +3,11 @@
  * @author    Oleksandra Kuznetsova
  * @copyright 2019 Start ApS <info@start.dk>
  */
-namespace app\components;
+namespace app\modules\api\components;
 
-use app\models\Student;
-use app\models\Lesson;
-use app\models\StudentToLesson;
+use app\modules\api\models\Student;
+use app\modules\api\models\Lesson;
+use app\modules\api\models\StudentToLesson;
 
 class DataService
 {
@@ -102,8 +102,7 @@ class DataService
             ->joinWith('lesson')
             ->joinWith('student')
             ->where(['students.group' => $group])
-            ->orderBy(['classes.starting_hours' => SORT_ASC])
-            ->groupBy(['classes.day'])
+            ->orderBy(['classes.day' => SORT_ASC,'classes.starting_hours' => SORT_ASC])
             ->limit($limit)
             ->offset($limit * ($page - 1))
             ->asArray()
@@ -122,5 +121,4 @@ class DataService
 
         return $result;
     }
-
 }

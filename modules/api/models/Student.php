@@ -1,10 +1,35 @@
 <?php
 
-namespace app\models;
+namespace app\modules\api\models;
 
-use app\models\StudentToLesson;
+use app\modules\api\models\StudentToLesson;
 use Yii;
 
+/**
+ *@OA\Schema(
+ *  schema="Student",
+ *  @OA\Property(
+ *     property="first_name",
+ *     type="string",
+ *     description="First name"
+ *  ),
+ *  @OA\Property(
+ *     property="last_name",
+ *     type="string",
+ *     description="Last name"
+ *  ),
+ *  @OA\Property(
+ *     property="age",
+ *     type="integer",
+ *     description="Age"
+ *  ),
+ *  @OA\Property(
+ *     property="group",
+ *     type="integer",
+ *     description="Group"
+ *  )
+ *)
+ */
 /**
  * This is the model class for table "students".
  *

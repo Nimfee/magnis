@@ -1,21 +1,34 @@
 <?php
 
-namespace app\models;
+namespace app\modules\api\models;
 
-use app\models\StudentToLesson;
+use app\modules\api\models\StudentToLesson;
 use Yii;
 
 /**
- * This is the model class for table "classes".
- *
- * @property int $id
- * @property string $name
- * @property string $room
- * @property int $day
- * @property string $starting_hours
- *
- * @property StudentsClasses[] $studentsClasses
- * @property Students[] $students
+ *@OA\Schema(
+ *  schema="Lesson",
+ *  @OA\Property(
+ *     property="name",
+ *     type="string",
+ *     description="Name"
+ *  ),
+ *  @OA\Property(
+ *     property="room",
+ *     type="string",
+ *     description="Room"
+ *  ),
+ *  @OA\Property(
+ *     property="starting_hours",
+ *     type="string",
+ *     description="Starting hours"
+ *  ),
+ *  @OA\Property(
+ *     property="day",
+ *     type="integer",
+ *     description="Day"
+ *  )
+ *)
  */
 class Lesson extends \yii\db\ActiveRecord
 {

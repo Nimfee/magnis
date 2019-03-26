@@ -48,9 +48,32 @@ $config = [
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
+            'showScriptName'  => false,
+            'rules'           => [
+                [
+                    'class'      => 'yii\rest\UrlRule',
+                    'controller' => ['api/lessons'],
+                    'extraPatterns' => [
+                        'GET getbystudent' => 'getbystudent',
+                    ]
+                ],
+                [
+                    'class'      => 'yii\rest\UrlRule',
+                    'controller' => ['api/students',],
+                    'extraPatterns' => [
+                        'GET purchasedcard' => 'purchasedcard',
+                    ]
+                ],
+                [
+                    'class'      => 'yii\rest\UrlRule',
+                    'controller' =>  'api/teachers',
+                ],
             ],
+        ],
+    ],
+    'modules' => [
+        'api'   => [
+            'class' => 'app\modules\api\Module',
         ],
     ],
     'params' => $params,

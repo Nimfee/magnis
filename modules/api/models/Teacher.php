@@ -1,9 +1,34 @@
 <?php
 
-namespace app\models;
+namespace app\modules\api\models;
 
 use Yii;
 
+/**
+ *@OA\Schema(
+ *  schema="Teacher",
+ *  @OA\Property(
+ *     property="first_name",
+ *     type="string",
+ *     description="First name"
+ *  ),
+ *  @OA\Property(
+ *     property="last_name",
+ *     type="string",
+ *     description="Last name"
+ *  ),
+ *  @OA\Property(
+ *     property="age",
+ *     type="integer",
+ *     description="Age"
+ *  ),
+ *  @OA\Property(
+ *     property="job_title",
+ *     type="string",
+ *     description="Job title"
+ *  )
+ *)
+ */
 /**
  * This is the model class for table "teachers".
  *
@@ -11,7 +36,7 @@ use Yii;
  * @property string $first_name
  * @property string $last_name
  * @property string $job_title
- * @property string $age
+ * @property integer $age
  */
 class Teacher extends \yii\db\ActiveRecord
 {
@@ -30,7 +55,8 @@ class Teacher extends \yii\db\ActiveRecord
     {
         return [
             [['first_name', 'last_name', 'job_title', 'age'], 'required'],
-            [['first_name', 'last_name', 'job_title', 'age'], 'string', 'max' => 255],
+            [['first_name', 'last_name', 'job_title'], 'string', 'max' => 255],
+            [['age'], 'integer'],
         ];
     }
 

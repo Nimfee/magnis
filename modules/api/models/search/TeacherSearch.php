@@ -1,13 +1,13 @@
 <?php
 
-namespace app\models\search;
+namespace app\modules\api\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Teacher;
+use app\modules\api\models\Teacher;
 
 /**
- * TeacherSearch represents the model behind the search form of `app\models\Teacher`.
+ * TeacherSearch represents the model behind the search form of `app\modules\api\models\Teacher`.
  */
 class TeacherSearch extends Teacher
 {
