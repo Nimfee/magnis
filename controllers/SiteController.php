@@ -22,11 +22,11 @@ class SiteController extends Controller
      *   ),
      * ),
      * @OA\Server(
-     *   url="http://localhost/magnis/magnis/web/api",
+     *   url="http://testsite.prod/api",
      *   description="main server",
      * )
      * @OA\Server(
-     *   url="http://localhost/magnis/magnis/web/api",
+     *   url="http://testsite.dev/api",
      *   description="dev server",
      * )
      */
