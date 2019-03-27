@@ -22,11 +22,11 @@ class SiteController extends Controller
      *   ),
      * ),
      * @OA\Server(
-     *   url="http://testsite.prod/api",
+     *   url="http://localhost/api",
      *   description="main server",
      * )
      * @OA\Server(
-     *   url="http://testsite.dev/api",
+     *   url="http://localhost/api",
      *   description="dev server",
      * )
      */
