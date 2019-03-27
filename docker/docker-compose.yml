@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 services:
-  magnis:
+  app:
     build: 
       context: ../
       dockerfile: ./docker/Dockerfile
@@ -16,7 +16,7 @@ services:
     depends_on: 
       - db    
     volumes:
-      - "../magnis:/var/www/magnis"
+      - "../app:/var/www/app"
       - "./conf/nginx:/etc/nginx/sites-available"      
   db:
     image: mysql:latest

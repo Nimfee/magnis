@@ -85,14 +85,6 @@ http://localhost/site/api-docks
 ### Install with Docker
 
 	docker-compose -f docker/docker-compose.yml up -d
-	docker exec -it docker_magnis bash
-	mkdir /var/www/magnis/log
-	cd ../magnis
-	composer install
-	php yii migrate
-	exit
-	docker-compose -f docker/docker-compose.yml down
-	docker-compose -f docker/docker-compose.yml up -d
 
 Open http://localhost/site/api-docks
 
