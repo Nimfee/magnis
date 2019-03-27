@@ -78,32 +78,31 @@ Set cookie validation key in `config/web.php` file to some random secret string:
 You can then access the application through the following URL:
 
 ~~~
-http://localhost/basic/web/
+http://localhost/site/api-docks
 ~~~
 
 
 ### Install with Docker
 
-Тормозим сервис docker-compose -f docker/docker-compose.yml down
-Запускаем его заново docker-compose -f docker/docker-compose.yml up -d
-Открываем localhost в браузере и смотрим на новый сайт.
-Update your vendor packages
+	docker-compose -f docker/docker-compose.yml up -d
+	docker exec -it docker_magnis bash
+	mkdir /var/www/magnis/log
+	cd ../magnis
+	composer install
+	php yii migrate
+	exit
+	docker-compose -f docker/docker-compose.yml down
+	docker-compose -f docker/docker-compose.yml up -d
 
-docker run -v /var/www/magnis/:/var/www/magnis -p 80:80 -t docker_magnis
-docker exec -it docker_magnis bash
-mkdir /var/www/magnis/log
-cd ../magnis
-composer install
-php yii migrate
-exit
-     
+Open http://localhost/site/api-docks
+
 Start the container
 
     docker-compose up -d
     
 You can then access the application through the following URL:
 
-    http://127.0.0.1:8000
+    http://localhost/site/api-docks
 
 **NOTES:** 
 - Minimum required Docker engine version `17.04` for development (see [Performance tuning for volume mounts](https://docs.docker.com/docker-for-mac/osxfs-caching/))
